@@ -11,11 +11,11 @@ http.createServer(async (req: http.IncomingMessage, res: http.ServerResponse): P
         let receivedStreamUrl: boolean = false;
 
         page.on('response', async (response: puppeteer.HTTPResponse) => {
-            // Check if preflight
-            if (response.status() === 204) {
+            // Check if preflight request
+            if (response.request().method() === 'OPTIONS') {
                 return;
             }
-            
+
             const url: string = response.url();
             if (url.includes('https://prod.npoplayer.nl/stream-link')) {
                 const jsonResponse: any = await response.json();
