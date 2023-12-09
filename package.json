@@ -12,7 +12,6 @@
     "url": "git+https://github.com/janyksteenbeek/nporadio2-visualradio-stream-grabber.git"
   },
   "author": "Janyk Steenbeek <me@janyk.dev>",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/janyksteenbeek/nporadio2-visualradio-stream-grabber/issues"
   },
