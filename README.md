@@ -12,7 +12,14 @@ bun run index.ts
 
 ```
 
-After that, the server is available on port 8080. You can get the stream link by requesting `/nporadio2.m3u8`.
+After that, the server is available on port 8080.
+
+## Streams
+
+The following streams are available:
+
+-  `/nporadio2.m3u8` - M3U8 stream with FairPlay DRM (HLS)
+-  `/nporadio2.mpd` - MPEG-DASH stream with Widevine DRM (DASH)
 
 ## Environment variables
 
