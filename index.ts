@@ -1,52 +1,88 @@
-import * as http from 'http';
-import * as puppeteer from 'puppeteer';
+import { createServer, IncomingMessage, ServerResponse } from 'http';
+import puppeteer, {Browser} from "puppeteer";
 
 const TIMEOUT: number = parseInt(process.env.GRAB_TIMEOUT || '') || (4 * 1000);
 const PORT: number = parseInt(process.env.GRAB_PORT || '') || 8080;
 
-http.createServer(async (req: http.IncomingMessage, res: http.ServerResponse): Promise<void> => {
-    if (req.url === '/nporadio2.m3u8') {
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        let receivedStreamUrl: boolean = false;
+interface StreamLinkRequest {
+    profileName: string;
+    drmType: string;
+    referrerUrl: string;
+}
 
-        page.on('response', async (response: puppeteer.HTTPResponse) => {
-            // Check if preflight request
-            if (response.request().method() === 'OPTIONS') {
-                return;
-            }
+interface StreamLinkResponse {
+    stream: {
+        streamURL: string;
+    };
+}
 
-            const url: string = response.url();
-            if (url.includes('https://prod.npoplayer.nl/stream-link')) {
-                const jsonResponse: any = await response.json();
-                const streamURL: string = jsonResponse?.stream?.streamURL;
+interface RouteConfig {
+    drmType: string;
+    profileName: string;
+}
 
-                if (streamURL) {
-                    res.writeHead(302, { 'Location': streamURL });
-                    res.end();
-                    receivedStreamUrl = true;
-                }
-            }
-        });
+const routeConfigs: { [key: string]: RouteConfig } = {
+    '/nporadio2.m3u8': { drmType: 'fairplay', profileName: 'hls' },
+    '/nporadio2.mpd': { drmType: 'widevine', profileName: 'dash' }
+};
 
-        await page.goto('https://www.nporadio2.nl/live', {
-            waitUntil: 'networkidle2'
-        });
+async function fetchStreamUrl(browser: Browser, config: RouteConfig): Promise<string | null> {
+    const page = await browser.newPage();
+    await page.setRequestInterception(true);
 
-        setTimeout(() => {
-            if (!receivedStreamUrl) {
-                res.writeHead(408);
-                res.end('Stream URL not found in time');
-            }
-            browser.close();
-        }, TIMEOUT);
+    page.on('request', (interceptedRequest) => {
+        if (interceptedRequest.url().includes('https://prod.npoplayer.nl/stream-link') && interceptedRequest.method() === 'POST') {
+            const postData: StreamLinkRequest = {
+                ...JSON.parse(interceptedRequest.postData() || '{}'),
+                drmType: config.drmType,
+                profileName: config.profileName
+            };
+            interceptedRequest.continue({
+                method: 'POST',
+                postData: JSON.stringify(postData),
+                headers: interceptedRequest.headers()
+            });
+        } else {
+            interceptedRequest.continue();
+        }
+    });
 
-    } else {
-        res.writeHead(404);
-        res.end('Not Found');
+    let streamUrl: string | null = null;
+    page.on('response', async (response) => {
+        if (response.request().method() === 'OPTIONS') return;
+        if (response.url().includes('https://prod.npoplayer.nl/stream-link')) {
+            const jsonResponse: StreamLinkResponse = await response.json();
+            streamUrl = jsonResponse.stream.streamURL;
+        }
+    });
+
+    await page.goto('https://www.nporadio2.nl/live', { waitUntil: 'networkidle2' });
+    await new Promise((resolve) => setTimeout(resolve, TIMEOUT));
+    await page.close();
+
+    return streamUrl;
+}
+
+createServer(async (req, res) => {
+    const browser = await puppeteer.launch({ headless: 'new' });
+    const date= new Date().toISOString();
+
+    const config = routeConfigs[req.url || ''];
+
+    if (config === undefined) {
+        console.log(`[${date}] 404 ${req.url}`);
+        res.writeHead(404).end('Not Found');
     }
+    const streamUrl = await fetchStreamUrl(browser, config);
+    if (streamUrl) {
+        console.log(`[${date}] 302 ${req.url} -> ${streamUrl}`);
+        res.writeHead(302, { 'Location': streamUrl }).end();
+    } else {
+        console.log(`[${date}][${date}] 408 ${req.url}`);
+        res.writeHead(408).end('Request Timeout');
+        res.end('Stream URL not found in time');
+    }
+
 }).listen(PORT, () => {
     console.log(`Server running at port ${PORT} 🚀`);
-    console.log('To grab the stream URL, visit http://<ip-address>:8080/nporadio2.m3u8');
-    console.log('To quit, press CTRL+C');
 });

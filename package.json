@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "A project to grab visual radio stream URL from NPO Radio 2.",
   "main": "index.ts",
-  "type": "module",
   "scripts": {
-    "start": "bun run index.ts"
+    "start": "ts-node index.ts",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
