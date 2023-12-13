@@ -25,6 +25,9 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+ENV NODE_ENV=production
+ENV NO_SANDBOX=true
+
 RUN npx puppeteer browsers install chrome
 RUN npm run build
 

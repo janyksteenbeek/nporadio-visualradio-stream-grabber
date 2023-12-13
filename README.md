@@ -27,6 +27,7 @@ The following streams are available:
 | ---- | ----------- | ------- |
 | `GRAB_TIMEOUT` | The timeout for the grabber in milliseconds | `4000` |
 | `GRAB_PORT` | The port to listen on | `8080` |
+| `NO_SANDBOX` | Whether to run Puppeteer in a sandbox | `false` |
 
 
 ## Button for Home Assistant

@@ -1,8 +1,9 @@
 import { createServer, IncomingMessage, ServerResponse } from 'http';
-import puppeteer, {Browser} from "puppeteer";
+import puppeteer, {Browser, PuppeteerLaunchOptions} from "puppeteer";
 
 const TIMEOUT: number = parseInt(process.env.GRAB_TIMEOUT || '') || (4 * 1000);
 const PORT: number = parseInt(process.env.GRAB_PORT || '') || 8080;
+const NO_SANDBOX: boolean = process.env.NO_SANDBOX === 'true';
 
 interface StreamLinkRequest {
     profileName: string;
@@ -64,7 +65,12 @@ async function fetchStreamUrl(browser: Browser, config: RouteConfig): Promise<st
 }
 
 createServer(async (req, res) => {
-    const browser = await puppeteer.launch({ headless: 'new' });
+    let options: PuppeteerLaunchOptions = {headless: 'new', args: [] };
+    if (NO_SANDBOX) {
+        options = { ...options, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+    }
+    
+    const browser = await puppeteer.launch(options);
     const date= new Date().toISOString();
 
     const config = routeConfigs[req.url || ''];
