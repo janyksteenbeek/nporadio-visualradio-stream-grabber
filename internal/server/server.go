@@ -132,7 +132,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	mutex.Unlock()
 
 	if !ok || time.Since(cached.Timestamp) >= refreshInterval {
-		http.Error(w, "Stream URL not found or expired", http.StatusGatewayTimeout)
+		http.Error(w, "Stream URL not found or expired", http.StatusNotFound)
 		return
 	}
 
