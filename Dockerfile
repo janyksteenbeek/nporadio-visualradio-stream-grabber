@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.21
 
 RUN apt-get update && apt-get install -y wget gnupg2 \
     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
