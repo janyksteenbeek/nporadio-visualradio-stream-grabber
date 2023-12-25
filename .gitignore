@@ -1,6 +1,13 @@
 /.idea
-bun.lockb
-package-lock.json
-node_modules/
 .DS_Store
 /dist
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+go.work
+nporadio-visualradio-stream-grabber
