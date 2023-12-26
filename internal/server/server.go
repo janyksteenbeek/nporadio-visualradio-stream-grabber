@@ -36,9 +36,9 @@ var routeConfigs = map[string]RouteConfig{
 }
 
 var cachedUrls = make(map[string]CachedStreamUrl)
-var port = defaultPort
-var refreshInterval = defaultRefreshInterval
-var timeout = defaultTimeout
+var port int
+var refreshInterval time.Duration
+var timeout time.Duration
 var mutex = &sync.Mutex{}
 
 func fetchStreamUrl(ctx context.Context, config RouteConfig, authToken string) (string, error) {
