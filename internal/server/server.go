@@ -23,10 +23,16 @@ const (
 )
 
 var routeConfigs = map[string]RouteConfig{
-	"/nporadio2.m3u8": {DrmType: "fairplay", ProfileName: "hls", URL: "https://www.nporadio2.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
-	"/nporadio2.mpd":  {DrmType: "widevine", ProfileName: "dash", URL: "https://www.nporadio2.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
-	"/npo3fm.m3u8":    {DrmType: "fairplay", ProfileName: "hls", URL: "https://www.npo3fm.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
-	"/npo3fm.mpd":     {DrmType: "widevine", ProfileName: "dash", URL: "https://www.npo3fm.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
+	"/nporadio1.m3u8":   {DrmType: "fairplay", ProfileName: "hls", URL: "https://www.nporadio1.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
+	"/nporadio1.mpd":    {DrmType: "widevine", ProfileName: "dash", URL: "https://www.nporadio1.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
+	"/nporadio2.m3u8":   {DrmType: "fairplay", ProfileName: "hls", URL: "https://www.nporadio2.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
+	"/nporadio2.mpd":    {DrmType: "widevine", ProfileName: "dash", URL: "https://www.nporadio2.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
+	"/npo3fm.m3u8":      {DrmType: "fairplay", ProfileName: "hls", URL: "https://www.npo3fm.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
+	"/npo3fm.mpd":       {DrmType: "widevine", ProfileName: "dash", URL: "https://www.npo3fm.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
+	"/npoklassiek.m3u8": {DrmType: "fairplay", ProfileName: "hls", URL: "https://www.nporadio4.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
+	"/npoklassiek.mpd":  {DrmType: "widevine", ProfileName: "dash", URL: "https://www.nporadio4.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
+	"/funx.m3u8":        {DrmType: "fairplay", ProfileName: "hls", URL: "https://www.funx.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
+	"/funx.mpd":         {DrmType: "widevine", ProfileName: "dash", URL: "https://www.funx.nl/live", StreamBuilderURL: "https://prod.npoplayer.nl/stream-link"},
 }
 
 var cachedUrls = make(map[string]CachedStreamUrl)

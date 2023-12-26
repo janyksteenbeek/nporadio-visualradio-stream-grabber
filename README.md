@@ -16,10 +16,19 @@ After that, the server is available on port 8080.
 
 The following streams are available:
 
--  `/nporadio2.m3u8` - M3U8 stream with FairPlay DRM (HLS)
--  `/nporadio2.mpd` - MPEG-DASH stream with Widevine DRM (DASH)
--  `/npo3fm.m3u8` - M3U8 stream with FairPlay DRM (HLS)
--  `/npo3fm.mpd` - MPEG-DASH stream with Widevine DRM (DASH)
+| URL                 | Station      | Format           | DRM Type            |
+|---------------------|--------------|------------------|---------------------|
+| `/nporadio1.m3u8`   | NPO Radio 1  | M3U8 stream      | FairPlay DRM (HLS)  |
+| `/nporadio1.mpd`    | NPO Radio 1  | MPEG-DASH stream | Widevine DRM (DASH) |
+| `/nporadio2.m3u8`   | NPO Radio 2  | M3U8 stream      | FairPlay DRM (HLS)  |
+| `/nporadio2.mpd`    | NPO Radio 2  | MPEG-DASH stream | Widevine DRM (DASH) |
+| `/npo3fm.m3u8`      | NPO 3FM      | M3U8 stream      | FairPlay DRM (HLS)  |
+| `/npo3fm.mpd`       | NPO 3FM      | MPEG-DASH stream | Widevine DRM (DASH) |
+| `/npoklassiek.m3u8` | NPO Klassiek | M3U8 stream      | FairPlay DRM (HLS)  |
+| `/npoklassiek.mpd`  | NPO Klassiek | MPEG-DASH stream | Widevine DRM (DASH) |
+| `/funx.m3u8`        | FunX         | M3U8 stream      | FairPlay DRM (HLS)  |
+| `/funx.mpd`         | FunX         | MPEG-DASH stream | Widevine DRM (DASH) |
+
 
 
 ## Environment variables
