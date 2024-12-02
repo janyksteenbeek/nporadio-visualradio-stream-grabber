@@ -131,14 +131,21 @@ func fetchTokenURL(ctx context.Context, browser *rod.Browser, livePageURL string
 		return "", fmt.Errorf("failed to load page %s: %v", livePageURL, err)
 	}
 
-	element := page.Element("#__NEXT_DATA__")
+	element, err := page.Element("#__NEXT_DATA__")
+	if err != nil {
+		return "", fmt.Errorf("failed to find #__NEXT_DATA__ element on page %s: %v", livePageURL, err)
+	}
 	if element == nil {
 		return "", fmt.Errorf("failed to find #__NEXT_DATA__ element on page %s", livePageURL)
 	}
 
-	scriptContent := element.Text()
+	scriptContent, err := element.Text()
+	if err != nil {
+		return "", fmt.Errorf("failed to get text content from element on page %s: %v", livePageURL, err)
+	}
+
 	var nextData NextData
-	err := json.Unmarshal([]byte(scriptContent), &nextData)
+	err = json.Unmarshal([]byte(scriptContent), &nextData)
 	if err != nil {
 		return "", err
 	}
