@@ -118,10 +118,25 @@ func fetchPlayerToken(ctx context.Context, tokenURL string) (string, error) {
 
 func fetchTokenURL(ctx context.Context, browser *rod.Browser, livePageURL string) (string, error) {
 	page := browser.MustPage(livePageURL)
-	defer page.Close()
-	page.MustWaitLoad()
+	if page == nil {
+		return "", fmt.Errorf("failed to create page for %s", livePageURL)
+	}
+	defer func() {
+		if err := page.Close(); err != nil {
+			log.Printf("Error closing page: %v", err)
+		}
+	}()
 
-	scriptContent := page.MustElement("#__NEXT_DATA__").MustText()
+	if err := page.WaitLoad(); err != nil {
+		return "", fmt.Errorf("failed to load page %s: %v", livePageURL, err)
+	}
+
+	element := page.Element("#__NEXT_DATA__")
+	if element == nil {
+		return "", fmt.Errorf("failed to find #__NEXT_DATA__ element on page %s", livePageURL)
+	}
+
+	scriptContent := element.Text()
 	var nextData NextData
 	err := json.Unmarshal([]byte(scriptContent), &nextData)
 	if err != nil {
@@ -204,13 +219,19 @@ func StartServer() {
 	if refreshInterval == 0 {
 		refreshInterval = defaultRefreshInterval
 	}
-	browser := rod.New()
+
+	browser := rod.New().NoDefaultDevice()
+	browser = browser.Timeout(timeout)
 
 	err := browser.Connect()
 	if err != nil {
 		log.Fatalf("Failed to connect to browser: %v", err)
 	}
-	defer browser.Close()
+	defer func() {
+		if err := browser.Close(); err != nil {
+			log.Printf("Error closing browser: %v", err)
+		}
+	}()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
