@@ -118,6 +118,7 @@ func fetchPlayerToken(ctx context.Context, tokenURL string) (string, error) {
 
 func fetchTokenURL(ctx context.Context, browser *rod.Browser, livePageURL string) (string, error) {
 	page := browser.MustPage(livePageURL)
+	defer page.Close()
 	page.MustWaitLoad()
 
 	scriptContent := page.MustElement("#__NEXT_DATA__").MustText()
@@ -209,6 +210,7 @@ func StartServer() {
 	if err != nil {
 		log.Fatalf("Failed to connect to browser: %v", err)
 	}
+	defer browser.Close()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
