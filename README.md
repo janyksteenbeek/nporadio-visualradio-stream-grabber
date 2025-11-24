@@ -35,7 +35,7 @@ The following streams are available:
 
 | Name           | type            | Description                                 | Default            |
 |----------------|-----------------|---------------------------------------------|--------------------|
-| `GRAB_TIMEOUT` | duration string | The timeout for the grabber in milliseconds | ` 4 * time.Second` |
+| `GRAB_TIMEOUT` | duration string | The timeout for the grabber in milliseconds | `30 * time.Second` |
 | `GRAB_PORT`    | int             | The port to listen on                       | `8080`             |
 | `GRAB_REFRESH` | duration string | The refresh interval                        | `2 * time.Hour`    |
 
