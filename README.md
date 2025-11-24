@@ -1,6 +1,8 @@
-# NPO Radio Visual Radio stream link grabber
+# NPO Radio Visual Radio DRM stream link grabber
 
-This is a Go HTTP service that NPO Radio stream links with DRM. It saves the stream links into cache and updates them every 2 hours. This is done to prevent the stream links from expiring. 
+This Go-based HTTP service fetches and refreshes DRM-protected NPO Radio Visual Radio stream URLs. These URLs expire regularly, which makes them unreliable to use directly in tools like Home Assistant. The service solves this by automatically retrieving fresh stream links, caching them in memory, and updating them every two hours. Other applications can then request stable, always-valid URLs from the service instead of dealing with the DRM endpoints themselves.
+
+When another application — for example Home Assistant — requests a stream, the service simply returns the cached, always-valid URL through a small HTTP API. If the cache is empty or expired, it fetches a new URL on demand. This makes the service a stable, lightweight proxy between your local setup and NPO’s frequently changing stream URLs.
 
 ## Usage
 
@@ -10,7 +12,7 @@ go build -o nporadio-visualradio-stream-grabber cmd/grabber/main.go
 ./nporadio-visualradio-stream-grabber
 ```
 
-After that, the server is available on port 8080.
+After that, the server will initialize the Chromium browser, fetch the URLs and an HTTP API will be exposed on port 8080 (unless changed).
 
 ## Streams
 
@@ -28,6 +30,8 @@ The following streams are available:
 | `/npoklassiek.mpd`  | NPO Klassiek | MPEG-DASH stream | Widevine DRM (DASH) |
 | `/funx.m3u8`        | FunX         | M3U8 stream      | FairPlay DRM (HLS)  |
 | `/funx.mpd`         | FunX         | MPEG-DASH stream | Widevine DRM (DASH) |
+
+You access the stream at `http://ip_address:8080/nporadio1.m3u8`. 
 
 
 
