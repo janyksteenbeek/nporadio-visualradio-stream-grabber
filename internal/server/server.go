@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/go-rod/rod"
 	"io"
 	"log"
 	"net/http"
@@ -14,10 +13,12 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/go-rod/rod"
 )
 
 const (
-	defaultTimeout         = 4 * time.Second
+	defaultTimeout         = 30 * time.Second
 	defaultPort            = 8080
 	defaultRefreshInterval = 2 * time.Hour
 )
@@ -228,9 +229,8 @@ func StartServer() {
 	}
 
 	browser := rod.New().NoDefaultDevice()
-	browser = browser.Timeout(timeout)
-
 	err := browser.Connect()
+
 	if err != nil {
 		log.Fatalf("Failed to connect to browser: %v", err)
 	}
@@ -242,6 +242,8 @@ func StartServer() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	browser = browser.Timeout(timeout)
 
 	go updateStreamUrls(ctx, browser)
 	go startUpdateTicker(ctx, browser)
